@@ -11,7 +11,7 @@ A retro-style space shooter game built with p5.js. Control your spaceship, shoot
 
 ## Play the Game
 
-You can play the game here: [Space Shooter Game](https://YOUR_USERNAME.github.io/space-shooter)
+You can play the game here: [Space Shooter Game](https://fastestmk.github.io/space-shooter)
 
 ## Technologies Used
 
