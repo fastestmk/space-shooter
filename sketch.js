@@ -19,6 +19,9 @@ let particleEffects = [];
 let rotationAngle = 0;
 let playerZ = 0;
 let zSpeed = 0.1;
+let isMobile = false;
+let leftPressed = false;
+let rightPressed = false;
 
 // Game colors
 let gameColors = {
@@ -31,8 +34,20 @@ let gameColors = {
 };
 
 function setup() {
-  // Set up the canvas
-  createCanvas(400, 600);
+  // Check if device is mobile
+  isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Create canvas that fits the screen
+  let canvasWidth = isMobile ? windowWidth * 0.95 : 400;
+  let canvasHeight = isMobile ? windowHeight * 0.7 : 600;
+  createCanvas(canvasWidth, canvasHeight);
+  
+  // Show mobile controls if on mobile device
+  if (isMobile) {
+    document.getElementById('mobileControls').style.display = 'flex';
+    setupMobileControls();
+  }
+  
   playerX = width / 2;
 
   // Initialize starfield with additional properties for glimmering
@@ -63,6 +78,35 @@ function setup() {
   startButton = createButton('Click to Enable Audio & Start');
   startButton.position(width/2 - 75, height/2 + 50);
   startButton.mousePressed(startGame);
+}
+
+function setupMobileControls() {
+  // Left button
+  const leftBtn = document.getElementById('leftBtn');
+  leftBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    leftPressed = true;
+  });
+  leftBtn.addEventListener('touchend', () => leftPressed = false);
+  
+  // Right button
+  const rightBtn = document.getElementById('rightBtn');
+  rightBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    rightPressed = true;
+  });
+  rightBtn.addEventListener('touchend', () => rightPressed = false);
+  
+  // Shoot button
+  const shootBtn = document.getElementById('shootBtn');
+  shootBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (gameState === 'playing' && shootCooldown === 0) {
+      shootProjectile();
+      shootCooldown = 10;
+      playShootSound();
+    }
+  });
 }
 
 function draw() {
@@ -266,16 +310,13 @@ function keyPressed() {
 }
 
 function movePlayer() {
-  // Move spaceship left or right with more precise positioning
-  if (keyIsDown(LEFT_ARROW)) {
-    playerX = Math.round(playerX - playerSpeed);  // Round to prevent floating point imprecision
+  if (keyIsDown(LEFT_ARROW) || leftPressed) {
+    playerX = Math.round(playerX - playerSpeed);
   }
-  if (keyIsDown(RIGHT_ARROW)) {
-    playerX = Math.round(playerX + playerSpeed);  // Round to prevent floating point imprecision
+  if (keyIsDown(RIGHT_ARROW) || rightPressed) {
+    playerX = Math.round(playerX + playerSpeed);
   }
-  
-  // Keep within screen bounds with tighter constraints
-  playerX = constrain(playerX, 15, width - 15);  // Adjusted from 10 to 15 to match player ship size
+  playerX = constrain(playerX, 15, width - 15);
 }
 
 function shootProjectile() {
@@ -399,4 +440,33 @@ function drawGlowingText(txt, x, y, size, color) {
 
 function updateParticles() {
   // Implementation of updateParticles function
+}
+
+// Add window resize handling
+function windowResized() {
+  if (isMobile) {
+    resizeCanvas(windowWidth * 0.95, windowHeight * 0.7);
+  }
+}
+
+// Modify start game function to work with touch
+function touchStarted() {
+  if (gameState === 'start') {
+    gameState = 'playing';
+    score = 0;
+    enemies = [];
+    projectiles = [];
+    frameCountSinceStart = 0;
+    enemySpawnInterval = 60;
+  } else if (gameState === 'gameOver') {
+    gameState = 'start';
+  }
+  return false;
+}
+
+// Update game parameters for mobile
+if (isMobile) {
+  playerSpeed = 4;  // Slightly faster for mobile
+  enemySpeed = 2.5;  // Slightly faster
+  enemySpawnInterval = 70;  // Slightly less frequent spawns
 }

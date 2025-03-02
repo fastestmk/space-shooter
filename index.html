@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Space Shooter</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
@@ -15,9 +15,40 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            touch-action: none;
+            background-color: black;
+        }
+        #mobileControls {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            display: none;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 20px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            touch-action: none;
+        }
+        #shootBtn {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
         }
     </style>
 </head>
 <body>
+    <div id="mobileControls">
+        <button id="leftBtn" class="control-btn">←</button>
+        <button id="rightBtn" class="control-btn">→</button>
+    </div>
+    <button id="shootBtn" class="control-btn">🔥</button>
 </body>
 </html>
